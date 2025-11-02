@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import pycountry
 from datetime import datetime
+import os
 
 
 @st.cache_data
@@ -31,6 +32,23 @@ def main():
     df_f = df.copy()
     if continent:
         df_f = df_f[df_f["continentExp"] == continent]
+
+    # Helper: determine appropriate map view (scope / center / zoom) for a selected continent
+    def _view_for_continent(cont):
+        # Returns a dict with keys: scope (for px.choropleth) and center/zoom for mapbox
+        if not cont:
+            return {"scope": None, "center": {"lat": 10, "lon": 0}, "zoom": 0.6}
+        lookup = {
+            "Europe": {"scope": "europe", "center": {"lat": 54.0, "lon": 15.0}, "zoom": 3.0},
+            "Asia": {"scope": "asia", "center": {"lat": 34.0, "lon": 100.0}, "zoom": 2.0},
+            "Africa": {"scope": "africa", "center": {"lat": 2.0, "lon": 20.0}, "zoom": 1.5},
+            "North America": {"scope": "north america", "center": {"lat": 45.0, "lon": -100.0}, "zoom": 2.0},
+            "South America": {"scope": "south america", "center": {"lat": -15.0, "lon": -60.0}, "zoom": 2.0},
+            "Oceania": {"scope": "oceania", "center": {"lat": -25.0, "lon": 140.0}, "zoom": 2.8},
+            "Australia": {"scope": "oceania", "center": {"lat": -25.0, "lon": 134.0}, "zoom": 3.0},
+        }
+        return lookup.get(cont, {"scope": None, "center": {"lat": 10, "lon": 0}, "zoom": 0.6})
+
 
     months = sorted(df_f["month"].dropna().unique().tolist())
     months = ["All"] + months
@@ -138,6 +156,14 @@ def main():
 
             # Map mode: static for current filter, animated across months, or slider
             map_mode = st.sidebar.selectbox("Map mode", ["Static (current filter)", "Animated by month", "Month slider"])
+            # Map style: offer several nicer basemaps; prefer Mapbox styles when token is present
+            has_mapbox = bool(os.getenv("MAPBOX_TOKEN"))
+            # Provide a palette of nicer styles (Plotly default + OSM + Carto + Stamen)
+            map_style_options = ["Plotly (default)", "open-street-map", "carto-positron", "carto-darkmatter", "stamen-terrain"]
+            if has_mapbox:
+                # allow Mapbox proprietary styles as well
+                map_style_options += ["streets", "satellite-streets"]
+            map_style = st.sidebar.selectbox("Map style", map_style_options, index=0)
 
             if map_mode == "Animated by month":
                 # need monthly breakdown across full df_f
@@ -150,17 +176,61 @@ def main():
                 monthly["iso_a3"] = monthly["country"].apply(name_to_iso3)
                 monthly = monthly.dropna(subset=["iso_a3"])
                 try:
-                    fig_map = px.choropleth(
-                        monthly,
-                        locations="iso_a3",
-                        color="cases",
-                        hover_name="country",
-                        animation_frame="month",
-                        color_continuous_scale="Reds",
-                        title="COVID-19 Cases by Country (animated by month)",
-                        labels={"cases": "cases"},
-                    )
-                    fig_map.update_layout(margin={"r":0,"t":30,"l":0,"b":0})
+                    # choose a Mapbox style param; allow mapbox:// style names for some choices
+                    mapbox_style_param = map_style
+                    if map_style in ("streets", "satellite-streets"):
+                        mapbox_style_param = f"mapbox://styles/mapbox/{map_style}-v11"
+
+                    # determine view (scope/center/zoom) for the selected continent
+                    view = _view_for_continent(continent)
+                    if has_mapbox:
+                        px.set_mapbox_token(os.getenv("MAPBOX_TOKEN"))
+                        fig_map = px.choropleth_mapbox(
+                            monthly,
+                            locations="iso_a3",
+                            color="cases",
+                            hover_name="country",
+                            animation_frame="month",
+                            color_continuous_scale="OrRd",
+                            title="COVID-19 Cases by Country (animated by month)",
+                            labels={"cases": "cases"},
+                            mapbox_style=mapbox_style_param,
+                            center=view.get("center", {"lat": 10, "lon": 0}),
+                            zoom=view.get("zoom", 0.6),
+                        )
+                        fig_map.update_traces(marker_line_width=0.5, marker_line_color="white")
+                    else:
+                        scope = view.get("scope") if continent else None
+                        if scope:
+                            fig_map = px.choropleth(
+                                monthly,
+                                locations="iso_a3",
+                                color="cases",
+                                hover_name="country",
+                                animation_frame="month",
+                                color_continuous_scale="OrRd",
+                                title="COVID-19 Cases by Country (animated by month)",
+                                labels={"cases": "cases"},
+                                scope=scope,
+                            )
+                        else:
+                            fig_map = px.choropleth(
+                                monthly,
+                                locations="iso_a3",
+                                color="cases",
+                                hover_name="country",
+                                animation_frame="month",
+                                color_continuous_scale="OrRd",
+                                title="COVID-19 Cases by Country (animated by month)",
+                                labels={"cases": "cases"},
+                            )
+                        fig_map.update_geos(showcountries=True)
+
+                    fig_map.update_layout(margin={"r":0,"t":30,"l":0,"b":0}, coloraxis_colorbar=dict(title="Cases"))
+                    try:
+                        fig_map.update_traces(hovertemplate="%{hovertext}<br>Cases: %{z:,}")
+                    except Exception:
+                        pass
                     st.plotly_chart(fig_map, use_container_width=True)
                 except Exception as e:
                     st.error(f"Could not render animated map: {e}")
@@ -181,15 +251,51 @@ def main():
                     month_df["iso_a3"] = month_df["country_name"].apply(name_to_iso3)
                     month_df = month_df.dropna(subset=["iso_a3"])
                     try:
-                        fig_map = px.choropleth(
-                            month_df,
-                            locations="iso_a3",
-                            color="cases",
-                            hover_name="country_name",
-                            color_continuous_scale="Reds",
-                            title=f"COVID-19 Cases by Country — {month_choice}",
-                        )
-                        fig_map.update_layout(margin={"r":0,"t":30,"l":0,"b":0})
+                        mapbox_style_param = map_style
+                        if map_style in ("streets", "satellite-streets"):
+                            mapbox_style_param = f"mapbox://styles/mapbox/{map_style}-v11"
+                        view = _view_for_continent(continent)
+                        if has_mapbox:
+                            px.set_mapbox_token(os.getenv("MAPBOX_TOKEN"))
+                            fig_map = px.choropleth_mapbox(
+                                month_df,
+                                locations="iso_a3",
+                                color="cases",
+                                hover_name="country_name",
+                                color_continuous_scale="OrRd",
+                                title=f"COVID-19 Cases by Country — {month_choice}",
+                                mapbox_style=mapbox_style_param,
+                                center=view.get("center", {"lat": 10, "lon": 0}),
+                                zoom=view.get("zoom", 0.6),
+                            )
+                            fig_map.update_traces(marker_line_width=0.5, marker_line_color="white")
+                        else:
+                            scope = view.get("scope") if continent else None
+                            if scope:
+                                fig_map = px.choropleth(
+                                    month_df,
+                                    locations="iso_a3",
+                                    color="cases",
+                                    hover_name="country_name",
+                                    color_continuous_scale="OrRd",
+                                    title=f"COVID-19 Cases by Country — {month_choice}",
+                                    scope=scope,
+                                )
+                            else:
+                                fig_map = px.choropleth(
+                                    month_df,
+                                    locations="iso_a3",
+                                    color="cases",
+                                    hover_name="country_name",
+                                    color_continuous_scale="OrRd",
+                                    title=f"COVID-19 Cases by Country — {month_choice}",
+                                )
+                            fig_map.update_geos(showcountries=True)
+                        fig_map.update_layout(margin={"r":0,"t":30,"l":0,"b":0}, coloraxis_colorbar=dict(title="Cases"))
+                        try:
+                            fig_map.update_traces(hovertemplate="%{hovertext}<br>Cases: %{z:,}")
+                        except Exception:
+                            pass
                         st.plotly_chart(fig_map, use_container_width=True)
                     except Exception as e:
                         st.error(f"Could not render month map: {e}")
@@ -197,15 +303,51 @@ def main():
             else:
                 # Static map for current filter
                 try:
-                    fig_map = px.choropleth(
-                        map_df,
-                        locations="iso_a3",
-                        color="cases",
-                        hover_name="country_name",
-                        color_continuous_scale="Reds",
-                        title="COVID-19 Cases by Country",
-                    )
-                    fig_map.update_layout(margin={"r":0,"t":30,"l":0,"b":0})
+                    mapbox_style_param = map_style
+                    if map_style in ("streets", "satellite-streets"):
+                        mapbox_style_param = f"mapbox://styles/mapbox/{map_style}-v11"
+                    view = _view_for_continent(continent)
+                    if has_mapbox:
+                        px.set_mapbox_token(os.getenv("MAPBOX_TOKEN"))
+                        fig_map = px.choropleth_mapbox(
+                            map_df,
+                            locations="iso_a3",
+                            color="cases",
+                            hover_name="country_name",
+                            color_continuous_scale="OrRd",
+                            title="COVID-19 Cases by Country",
+                            mapbox_style=mapbox_style_param,
+                            center=view.get("center", {"lat": 10, "lon": 0}),
+                            zoom=view.get("zoom", 0.6),
+                        )
+                        fig_map.update_traces(marker_line_width=0.5, marker_line_color="white")
+                    else:
+                        scope = view.get("scope") if continent else None
+                        if scope:
+                            fig_map = px.choropleth(
+                                map_df,
+                                locations="iso_a3",
+                                color="cases",
+                                hover_name="country_name",
+                                color_continuous_scale="OrRd",
+                                title="COVID-19 Cases by Country",
+                                scope=scope,
+                            )
+                        else:
+                            fig_map = px.choropleth(
+                                map_df,
+                                locations="iso_a3",
+                                color="cases",
+                                hover_name="country_name",
+                                color_continuous_scale="OrRd",
+                                title="COVID-19 Cases by Country",
+                            )
+                        fig_map.update_geos(showcountries=True)
+                    fig_map.update_layout(margin={"r":0,"t":30,"l":0,"b":0}, coloraxis_colorbar=dict(title="Cases"))
+                    try:
+                        fig_map.update_traces(hovertemplate="%{hovertext}<br>Cases: %{z:,}")
+                    except Exception:
+                        pass
                     st.plotly_chart(fig_map, use_container_width=True)
                 except Exception as e:
                     st.error(f"Could not render choropleth map: {e}")
