@@ -45,7 +45,20 @@ else:
 
 	# Prepare for horizontal bar chart
 	top_sorted = top.sort_values(by='CFR', ascending=True)  # ascending for barh so largest is on top
-	plt.style.use('seaborn-whitegrid')
+	# prefer seaborn style if available, otherwise fall back
+	try:
+		plt.style.use('seaborn-whitegrid')
+	except Exception:
+		try:
+			avail = plt.style.available
+			if 'seaborn-v0_8-whitegrid' in avail:
+				plt.style.use('seaborn-v0_8-whitegrid')
+			elif 'seaborn' in avail:
+				plt.style.use('seaborn')
+			elif 'ggplot' in avail:
+				plt.style.use('ggplot')
+		except Exception:
+			pass
 	fig, ax = plt.subplots(figsize=(10, max(6, 0.35 * len(top_sorted))))
 
 	ax.barh(top_sorted['countriesAndTerritories'], top_sorted['CFR'], color='C3')

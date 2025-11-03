@@ -37,6 +37,18 @@ else:
        pdf.set_index('date', inplace=True)
 
        fig, ax = plt.subplots(figsize=(12, 6))
+       # prefer seaborn style if available, otherwise ignore
+       try:
+           plt.style.use('seaborn-whitegrid')
+       except Exception:
+           try:
+               avail = plt.style.available
+               if 'seaborn-v0_8-whitegrid' in avail:
+                   plt.style.use('seaborn-v0_8-whitegrid')
+               elif 'seaborn' in avail:
+                   plt.style.use('seaborn')
+           except Exception:
+               pass
        ax.plot(pdf.index, pdf['total_cases'], marker='o', linestyle='-')
        ax.set_title('Monthly Cases')
        ax.set_ylabel('Total cases')

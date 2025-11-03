@@ -27,7 +27,21 @@ if pdf.empty:
     print("No data available to plot.")
 else:
     # Use horizontal bar chart for better readability of country names
-    plt.style.use('seaborn-whitegrid')
+    # prefer seaborn style if available, otherwise fall back gracefully
+    try:
+        plt.style.use('seaborn-whitegrid')
+    except Exception:
+        try:
+            # pick a sensible available style
+            avail = plt.style.available
+            if 'seaborn-v0_8-whitegrid' in avail:
+                plt.style.use('seaborn-v0_8-whitegrid')
+            elif 'seaborn' in avail:
+                plt.style.use('seaborn')
+            elif 'ggplot' in avail:
+                plt.style.use('ggplot')
+        except Exception:
+            pass
     fig, ax = plt.subplots(figsize=(10, 8))
 
     # Sort ascending so the largest bar is on top in horizontal bar chart
