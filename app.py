@@ -25,13 +25,46 @@ def main():
 
     # Sidebar filters
     st.sidebar.header("Filters")
-    continents = [None] + sorted(df["continentExp"].dropna().unique().tolist())
-    continent = st.sidebar.selectbox("Continent", continents, index=0)
+    
+    # Build continent list with sub-regions for America
+    base_continents = sorted(df["continentExp"].dropna().unique().tolist())
+    continent_options = [None]
+    north_america_countries = [
+        "United_States_of_America", "Canada", "Mexico", "Guatemala", "Honduras", "El_Salvador", 
+        "Nicaragua", "Costa_Rica", "Panama", "Belize", "Cuba", "Jamaica", "Haiti", 
+        "Dominican_Republic", "Bahamas", "Trinidad_and_Tobago", "Barbados", "Saint_Lucia",
+        "Grenada", "Saint_Vincent_and_the_Grenadines", "Antigua_and_Barbuda", 
+        "Dominica", "Saint_Kitts_and_Nevis"
+    ]
+    
+    south_america_countries = [
+        "Brazil", "Argentina", "Chile", "Colombia", "Peru", "Venezuela", "Ecuador", 
+        "Bolivia", "Paraguay", "Uruguay", "Guyana", "Suriname", "French_Guiana"
+    ]
+    
+    for c in base_continents:
+        if c == "America":
+            continent_options.extend(["America", "North America", "South America"])
+        else:
+            continent_options.append(c)
+    
+    continent = st.sidebar.selectbox("Continent", continent_options, index=0)
 
     # Filter by continent if selected
     df_f = df.copy()
     if continent:
-        df_f = df_f[df_f["continentExp"] == continent]
+        if continent == "North America":
+            df_f = df_f[
+                (df_f["continentExp"] == "America") & 
+                (df_f["countriesAndTerritories"].isin(north_america_countries))
+            ]
+        elif continent == "South America":
+            df_f = df_f[
+                (df_f["continentExp"] == "America") & 
+                (df_f["countriesAndTerritories"].isin(south_america_countries))
+            ]
+        else:
+            df_f = df_f[df_f["continentExp"] == continent]
 
     # Helper: determine appropriate map view (scope / center / zoom) for a selected continent
     def _view_for_continent(cont):
@@ -42,10 +75,11 @@ def main():
             "Europe": {"scope": "europe", "center": {"lat": 54.0, "lon": 15.0}, "zoom": 3.0},
             "Asia": {"scope": "asia", "center": {"lat": 34.0, "lon": 100.0}, "zoom": 2.0},
             "Africa": {"scope": "africa", "center": {"lat": 2.0, "lon": 20.0}, "zoom": 1.5},
-            "North America": {"scope": "north america", "center": {"lat": 45.0, "lon": -100.0}, "zoom": 2.0},
-            "South America": {"scope": "south america", "center": {"lat": -15.0, "lon": -60.0}, "zoom": 2.0},
-            "Oceania": {"scope": "oceania", "center": {"lat": -25.0, "lon": 140.0}, "zoom": 2.8},
-            "Australia": {"scope": "oceania", "center": {"lat": -25.0, "lon": 134.0}, "zoom": 3.0},
+            # "America": {"scope": "world", "center": {"lat": 15.0, "lon": -95.0}, "zoom": 2.2},
+            "North America": {"scope": "north america", "center": {"lat": 45.0, "lon": -100.0}, "zoom": 2.5},
+            "South America": {"scope": "south america", "center": {"lat": -15.0, "lon": -60.0}, "zoom": 2.5},
+            "Oceania": {"scope": "world", "center": {"lat": -25.0, "lon": 140.0}, "zoom": 2.5},
+            "Australia": {"scope": "world", "center": {"lat": -25.0, "lon": 134.0}, "zoom": 3.5},
         }
         return lookup.get(cont, {"scope": None, "center": {"lat": 10, "lon": 0}, "zoom": 0.6})
 
@@ -149,8 +183,9 @@ def main():
             # build iso mapping column
             map_df["iso_a3"] = map_df["country_name"].apply(name_to_iso3)
             missing = map_df[map_df["iso_a3"].isna()]
-            if len(missing) > 0:
-                st.sidebar.warning(f"{len(missing)} countries could not be mapped to ISO3; they will be omitted from the map.")
+            print(f"Countries missing ISO3 mapping: {missing['country_name'].tolist()}")
+            # if len(missing) > 0:
+            #     st.sidebar.warning(f"{len(missing)} countries could not be mapped to ISO3; they will be omitted from the map.")
 
             map_df = map_df.dropna(subset=["iso_a3"])  # Plotly needs ISO-3 for reliable plotting
 
@@ -201,7 +236,7 @@ def main():
                         fig_map.update_traces(marker_line_width=0.5, marker_line_color="white")
                     else:
                         scope = view.get("scope") if continent else None
-                        if scope:
+                        if scope and scope != "world":
                             fig_map = px.choropleth(
                                 monthly,
                                 locations="iso_a3",
@@ -213,6 +248,7 @@ def main():
                                 labels={"cases": "cases"},
                                 scope=scope,
                             )
+                            fig_map.update_geos(showcountries=True)
                         else:
                             fig_map = px.choropleth(
                                 monthly,
@@ -224,7 +260,17 @@ def main():
                                 title="COVID-19 Cases by Country (animated by month)",
                                 labels={"cases": "cases"},
                             )
-                        fig_map.update_geos(showcountries=True)
+                            # For America and Oceania, use projection center to zoom
+                            if scope == "world" and continent:
+                                center = view.get("center", {"lat": 0, "lon": 0})
+                                fig_map.update_geos(
+                                    showcountries=True,
+                                    projection_type="natural earth",
+                                    projection_scale=1.8,
+                                    center=center
+                                )
+                            else:
+                                fig_map.update_geos(showcountries=True)
 
                     fig_map.update_layout(margin={"r":0,"t":30,"l":0,"b":0}, coloraxis_colorbar=dict(title="Cases"))
                     try:
@@ -271,7 +317,7 @@ def main():
                             fig_map.update_traces(marker_line_width=0.5, marker_line_color="white")
                         else:
                             scope = view.get("scope") if continent else None
-                            if scope:
+                            if scope and scope != "world":
                                 fig_map = px.choropleth(
                                     month_df,
                                     locations="iso_a3",
@@ -281,6 +327,7 @@ def main():
                                     title=f"COVID-19 Cases by Country — {month_choice}",
                                     scope=scope,
                                 )
+                                fig_map.update_geos(showcountries=True)
                             else:
                                 fig_map = px.choropleth(
                                     month_df,
@@ -290,7 +337,17 @@ def main():
                                     color_continuous_scale="OrRd",
                                     title=f"COVID-19 Cases by Country — {month_choice}",
                                 )
-                            fig_map.update_geos(showcountries=True)
+                                # For America and Oceania, use projection center to zoom
+                                if scope == "world" and continent:
+                                    center = view.get("center", {"lat": 0, "lon": 0})
+                                    fig_map.update_geos(
+                                        showcountries=True,
+                                        projection_type="natural earth",
+                                        projection_scale=1.8,
+                                        center=center
+                                    )
+                                else:
+                                    fig_map.update_geos(showcountries=True)
                         fig_map.update_layout(margin={"r":0,"t":30,"l":0,"b":0}, coloraxis_colorbar=dict(title="Cases"))
                         try:
                             fig_map.update_traces(hovertemplate="%{hovertext}<br>Cases: %{z:,}")
@@ -323,7 +380,7 @@ def main():
                         fig_map.update_traces(marker_line_width=0.5, marker_line_color="white")
                     else:
                         scope = view.get("scope") if continent else None
-                        if scope:
+                        if scope and scope != "world":
                             fig_map = px.choropleth(
                                 map_df,
                                 locations="iso_a3",
@@ -333,6 +390,7 @@ def main():
                                 title="COVID-19 Cases by Country",
                                 scope=scope,
                             )
+                            fig_map.update_geos(showcountries=True)
                         else:
                             fig_map = px.choropleth(
                                 map_df,
@@ -342,7 +400,17 @@ def main():
                                 color_continuous_scale="OrRd",
                                 title="COVID-19 Cases by Country",
                             )
-                        fig_map.update_geos(showcountries=True)
+                            # For America and Oceania, use projection center to zoom
+                            if scope == "world" and continent:
+                                center = view.get("center", {"lat": 0, "lon": 0})
+                                fig_map.update_geos(
+                                    showcountries=True,
+                                    projection_type="natural earth",
+                                    projection_scale=1.8,
+                                    center=center
+                                )
+                            else:
+                                fig_map.update_geos(showcountries=True)
                     fig_map.update_layout(margin={"r":0,"t":30,"l":0,"b":0}, coloraxis_colorbar=dict(title="Cases"))
                     try:
                         fig_map.update_traces(hovertemplate="%{hovertext}<br>Cases: %{z:,}")
