@@ -1,6 +1,8 @@
 # COVID Spread — Streamlit App
 
-This folder contains an interactive Streamlit app to explore the COVID-19 dataset used in this project. The app provides top-N bar charts, time series, and choropleth maps (static and animated) built from aggregated data.
+This repository contains an interactive Streamlit app to explore the COVID-19 dataset used in this project. The app provides top-N bar charts, time series, and choropleth maps (static and animated) built from aggregated data.
+
+It also presents all outputs and scripts used in the project.
 
 ## Quick overview
 - App entry: `app.py`
@@ -30,22 +32,19 @@ streamlit run app.py
    - Map mode: choose between a static map for the current filter, an animated map by month, or a month slider.
 
 ## Map zooming behavior
-- When a continent is selected, the app computes a continent-specific view (scope, center, zoom) and applies it to the Plotly map. If `MAPBOX_TOKEN` is set the app uses `choropleth_mapbox` with the configured `center` and `zoom`. Otherwise the app uses `px.choropleth(..., scope=...)` to focus the geographic projection.
+- When a continent is selected, the app computes a continent-specific view (scope, center, zoom) and applies it to the Plotly map. 
 
 ## Generating and saving maps
-- The app displays interactive Plotly figures inside Streamlit. Separate scripts in `bin/` (for example `bin/dynamic.py` and `bin/europe.py`) are provided to generate interactive HTML files and static PNG thumbnails into `plots/` for inclusion in the LaTeX report.
+- The app displays interactive Plotly figures inside Streamlit. Separate scripts in `bin/` (for example `bin/dynamic.py` and `bin/europe.py`) are provided to generate interactive HTML files thumbnails into `plots/` for inclusion in the LaTeX report.
 - To run those scripts:
   ```bash
-  # generate global animated map and thumbnail
-  python3 bin/dynamic.py
+  # generate global animated map
+  python3 bin/spark_scripts/dynamic.py
 
-  # generate Europe animated map and thumbnail
-  python3 bin/europe.py
+  # generate Europe animated map
+  python3 bin/spark_scripts/europe.py
   ```
 
 After running the scripts you should find:
-- `plots/dynamic_map.html` and `plots/dynamic_map.png`
-- `plots/europe_dynamic_map.html` and `plots/europe_dynamic_map.png`
-
-Notes:
-- The HTML files are interactive and preserve the animation; include them in web pages or open them directly in a browser to view.
+- `plots/dynamic_map.html` 
+- `plots/europe_dynamic_map.html` 
