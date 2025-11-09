@@ -1,0 +1,5 @@
+Start: 2025-11-02T07:26:01+01:00
+Importing and running inside container: project3-mongodb
+Using mongosh inside container: /usr/bin/mongosh
+Warning: /usr/bin/time not found inside container; falling back to host /usr/bin/time (RSS may be inaccurate)
+End: 2025-11-02T07:26:02+01:00

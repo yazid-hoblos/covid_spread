@@ -1,0 +1,4 @@
+Start: 2025-11-02T07:23:08+01:00
+Running Spark workload inside container: project3-spark
+Warning: /usr/bin/time not found inside spark container; falling back to host /usr/bin/time (RSS may be inaccurate)
+End: 2025-11-02T07:23:25+01:00

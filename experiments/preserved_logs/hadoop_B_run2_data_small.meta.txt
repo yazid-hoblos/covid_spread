@@ -1,0 +1,4 @@
+Start: 2025-11-02T07:10:57+01:00
+Running Hadoop workload inside container: project3-hadoop
+Warning: /usr/bin/time not found inside hadoop container; falling back to host /usr/bin/time (RSS may be inaccurate)
+End: 2025-11-02T07:11:19+01:00

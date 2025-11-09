@@ -7,7 +7,7 @@ import os
 
 
 @st.cache_data
-def load_data(path="data.csv"):
+def load_data(path="data/data.csv"):
     df = pd.read_csv(path, parse_dates=["dateRep"] , dayfirst=True)
     # normalize column names if needed
     df.columns = [c.strip() for c in df.columns]
@@ -21,7 +21,7 @@ def main():
     st.set_page_config(layout="wide", page_title="COVID Analysis")
     st.title("Interactive COVID Analysis")
 
-    df = load_data("data.csv")
+    df = load_data("data/data.csv")
 
     # Sidebar filters
     st.sidebar.header("Filters")

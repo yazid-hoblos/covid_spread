@@ -1,0 +1,25 @@
+]0;mongosh mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000{
+  groups: [33m214[39m,
+  sample: [
+    {
+      totalCases: [33m16256754[39m,
+      country: [32m'United_States_of_America'[39m
+    },
+    {
+      totalCases: [33m9884100[39m,
+      country: [32m'India'[39m
+    },
+    {
+      totalCases: [33m6901952[39m,
+      country: [32m'Brazil'[39m
+    },
+    {
+      totalCases: [33m2653928[39m,
+      country: [32m'Russia'[39m
+    },
+    {
+      totalCases: [33m2376852[39m,
+      country: [32m'France'[39m
+    }
+  ]
+}

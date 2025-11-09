@@ -1,0 +1,35 @@
+]0;mongosh mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000{
+  groups: [33m214[39m,
+  sample: [
+    {
+      totalCases: [33m2083[39m,
+      totalDeaths: [33m606[39m,
+      caseFatalityRatio: [33m0.29092654824771963[39m,
+      country: [32m'Yemen'[39m
+    },
+    {
+      totalCases: [33m1250044[39m,
+      totalDeaths: [33m113953[39m,
+      caseFatalityRatio: [33m0.09115919119646988[39m,
+      country: [32m'Mexico'[39m
+    },
+    {
+      totalCases: [33m13[39m,
+      totalDeaths: [33m1[39m,
+      caseFatalityRatio: [33m0.07692307692307693[39m,
+      country: [32m'Montserrat'[39m
+    },
+    {
+      totalCases: [33m202110[39m,
+      totalDeaths: [33m13875[39m,
+      caseFatalityRatio: [33m0.06865073474840433[39m,
+      country: [32m'Ecuador'[39m
+    },
+    {
+      totalCases: [33m370[39m,
+      totalDeaths: [33m25[39m,
+      caseFatalityRatio: [33m0.06756756756756757[39m,
+      country: [32m'Isle_of_Man'[39m
+    }
+  ]
+}

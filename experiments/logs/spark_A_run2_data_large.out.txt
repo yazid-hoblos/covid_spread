@@ -1,0 +1,167 @@
+Running Spark workload A: top countries by total cases
+25/11/03 10:02:39 INFO SparkContext: Running Spark version 3.5.0
+25/11/03 10:02:39 INFO SparkContext: OS info Linux, 6.6.87.2-microsoft-standard-WSL2, amd64
+25/11/03 10:02:39 INFO SparkContext: Java version 17.0.8.1
+25/11/03 10:02:39 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+25/11/03 10:02:39 INFO ResourceUtils: ==============================================================
+25/11/03 10:02:39 INFO ResourceUtils: No custom resources configured for spark.driver.
+25/11/03 10:02:39 INFO ResourceUtils: ==============================================================
+25/11/03 10:02:39 INFO SparkContext: Submitted application: TopCountriesNoPlot
+25/11/03 10:02:39 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+25/11/03 10:02:39 INFO ResourceProfile: Limiting resource is cpu
+25/11/03 10:02:39 INFO ResourceProfileManager: Added ResourceProfile id: 0
+25/11/03 10:02:39 INFO SecurityManager: Changing view acls to: jovyan
+25/11/03 10:02:39 INFO SecurityManager: Changing modify acls to: jovyan
+25/11/03 10:02:39 INFO SecurityManager: Changing view acls groups to: 
+25/11/03 10:02:39 INFO SecurityManager: Changing modify acls groups to: 
+25/11/03 10:02:39 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: jovyan; groups with view permissions: EMPTY; users with modify permissions: jovyan; groups with modify permissions: EMPTY
+25/11/03 10:02:39 INFO Utils: Successfully started service 'sparkDriver' on port 35413.
+25/11/03 10:02:39 INFO SparkEnv: Registering MapOutputTracker
+25/11/03 10:02:39 INFO SparkEnv: Registering BlockManagerMaster
+25/11/03 10:02:39 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+25/11/03 10:02:39 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+25/11/03 10:02:39 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+25/11/03 10:02:39 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-a6bf7587-47da-4d35-9785-145ff8b36040
+25/11/03 10:02:39 INFO MemoryStore: MemoryStore started with capacity 434.4 MiB
+25/11/03 10:02:39 INFO SparkEnv: Registering OutputCommitCoordinator
+25/11/03 10:02:39 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+25/11/03 10:02:39 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+25/11/03 10:02:39 INFO Executor: Starting executor ID driver on host 53781419c11f
+25/11/03 10:02:39 INFO Executor: OS info Linux, 6.6.87.2-microsoft-standard-WSL2, amd64
+25/11/03 10:02:39 INFO Executor: Java version 17.0.8.1
+25/11/03 10:02:39 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+25/11/03 10:02:39 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@1db0f51c for default.
+25/11/03 10:02:39 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 44265.
+25/11/03 10:02:39 INFO NettyBlockTransferService: Server created on 53781419c11f:44265
+25/11/03 10:02:39 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+25/11/03 10:02:39 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 53781419c11f, 44265, None)
+25/11/03 10:02:39 INFO BlockManagerMasterEndpoint: Registering block manager 53781419c11f:44265 with 434.4 MiB RAM, BlockManagerId(driver, 53781419c11f, 44265, None)
+25/11/03 10:02:39 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 53781419c11f, 44265, None)
+25/11/03 10:02:39 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 53781419c11f, 44265, None)
+25/11/03 10:02:40 INFO SingleEventLogFileWriter: Logging events to file:/home/jovyan/experiments/events/local-1762164159827.inprogress
+25/11/03 10:02:40 INFO SharedState: Setting hive.metastore.warehouse.dir ('null') to the value of spark.sql.warehouse.dir.
+25/11/03 10:02:40 INFO SharedState: Warehouse path is 'file:/home/jovyan/spark-warehouse'.
+25/11/03 10:02:40 INFO InMemoryFileIndex: It took 33 ms to list leaf files for 1 paths.
+25/11/03 10:02:40 INFO InMemoryFileIndex: It took 1 ms to list leaf files for 1 paths.
+25/11/03 10:02:42 INFO FileSourceStrategy: Pushed Filters: 
+25/11/03 10:02:42 INFO FileSourceStrategy: Post-Scan Filters: (length(trim(value#0, None)) > 0)
+25/11/03 10:02:42 INFO CodeGenerator: Code generated in 182.190873 ms
+25/11/03 10:02:42 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 199.8 KiB, free 434.2 MiB)
+25/11/03 10:02:42 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 34.3 KiB, free 434.2 MiB)
+25/11/03 10:02:42 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on 53781419c11f:44265 (size: 34.3 KiB, free: 434.4 MiB)
+25/11/03 10:02:42 INFO SparkContext: Created broadcast 0 from csv at NativeMethodAccessorImpl.java:0
+25/11/03 10:02:42 INFO FileSourceScanExec: Planning scan with bin packing, max size: 4194304 bytes, open cost is considered as scanning 4194304 bytes.
+25/11/03 10:02:42 INFO SparkContext: Starting job: csv at NativeMethodAccessorImpl.java:0
+25/11/03 10:02:42 INFO DAGScheduler: Got job 0 (csv at NativeMethodAccessorImpl.java:0) with 1 output partitions
+25/11/03 10:02:42 INFO DAGScheduler: Final stage: ResultStage 0 (csv at NativeMethodAccessorImpl.java:0)
+25/11/03 10:02:42 INFO DAGScheduler: Parents of final stage: List()
+25/11/03 10:02:42 INFO DAGScheduler: Missing parents: List()
+25/11/03 10:02:42 INFO DAGScheduler: Submitting ResultStage 0 (MapPartitionsRDD[3] at csv at NativeMethodAccessorImpl.java:0), which has no missing parents
+25/11/03 10:02:42 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 13.5 KiB, free 434.2 MiB)
+25/11/03 10:02:42 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 6.4 KiB, free 434.2 MiB)
+25/11/03 10:02:42 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on 53781419c11f:44265 (size: 6.4 KiB, free: 434.4 MiB)
+25/11/03 10:02:42 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1580
+25/11/03 10:02:42 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 0 (MapPartitionsRDD[3] at csv at NativeMethodAccessorImpl.java:0) (first 15 tasks are for partitions Vector(0))
+25/11/03 10:02:42 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks resource profile 0
+25/11/03 10:02:42 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0) (53781419c11f, executor driver, partition 0, PROCESS_LOCAL, 8211 bytes) 
+25/11/03 10:02:42 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+25/11/03 10:02:42 INFO CodeGenerator: Code generated in 15.426064 ms
+25/11/03 10:02:42 INFO FileScanRDD: Reading File path: file:///home/jovyan/data/data.csv, range: 0-430717, partition values: [empty row]
+25/11/03 10:02:42 INFO CodeGenerator: Code generated in 9.882249 ms
+25/11/03 10:02:42 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1777 bytes result sent to driver
+25/11/03 10:02:42 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 150 ms on 53781419c11f (executor driver) (1/1)
+25/11/03 10:02:42 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool 
+25/11/03 10:02:42 INFO DAGScheduler: ResultStage 0 (csv at NativeMethodAccessorImpl.java:0) finished in 0.230 s
+25/11/03 10:02:42 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+25/11/03 10:02:42 INFO TaskSchedulerImpl: Killing all running tasks in stage 0: Stage finished
+25/11/03 10:02:42 INFO DAGScheduler: Job 0 finished: csv at NativeMethodAccessorImpl.java:0, took 0.255671 s
+25/11/03 10:02:42 INFO CodeGenerator: Code generated in 7.956827 ms
+25/11/03 10:02:42 INFO FileSourceStrategy: Pushed Filters: 
+25/11/03 10:02:42 INFO FileSourceStrategy: Post-Scan Filters: 
+25/11/03 10:02:42 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 199.8 KiB, free 434.0 MiB)
+25/11/03 10:02:42 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 34.3 KiB, free 433.9 MiB)
+25/11/03 10:02:42 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on 53781419c11f:44265 (size: 34.3 KiB, free: 434.3 MiB)
+25/11/03 10:02:42 INFO SparkContext: Created broadcast 2 from csv at NativeMethodAccessorImpl.java:0
+25/11/03 10:02:42 INFO FileSourceScanExec: Planning scan with bin packing, max size: 4194304 bytes, open cost is considered as scanning 4194304 bytes.
+25/11/03 10:02:42 INFO BlockManagerInfo: Removed broadcast_1_piece0 on 53781419c11f:44265 in memory (size: 6.4 KiB, free: 434.3 MiB)
+25/11/03 10:02:43 INFO FileSourceStrategy: Pushed Filters: 
+25/11/03 10:02:43 INFO FileSourceStrategy: Post-Scan Filters: 
+25/11/03 10:02:43 INFO CodeGenerator: Code generated in 52.942149 ms
+25/11/03 10:02:43 INFO MemoryStore: Block broadcast_3 stored as values in memory (estimated size 199.5 KiB, free 433.7 MiB)
+25/11/03 10:02:43 INFO MemoryStore: Block broadcast_3_piece0 stored as bytes in memory (estimated size 34.2 KiB, free 433.7 MiB)
+25/11/03 10:02:43 INFO BlockManagerInfo: Added broadcast_3_piece0 in memory on 53781419c11f:44265 (size: 34.2 KiB, free: 434.3 MiB)
+25/11/03 10:02:43 INFO SparkContext: Created broadcast 3 from toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22
+25/11/03 10:02:43 INFO FileSourceScanExec: Planning scan with bin packing, max size: 4194304 bytes, open cost is considered as scanning 4194304 bytes.
+25/11/03 10:02:43 INFO DAGScheduler: Registering RDD 13 (toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22) as input to shuffle 0
+25/11/03 10:02:43 INFO DAGScheduler: Got map stage job 1 (toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22) with 1 output partitions
+25/11/03 10:02:43 INFO DAGScheduler: Final stage: ShuffleMapStage 1 (toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22)
+25/11/03 10:02:43 INFO DAGScheduler: Parents of final stage: List()
+25/11/03 10:02:43 INFO DAGScheduler: Missing parents: List()
+25/11/03 10:02:43 INFO DAGScheduler: Submitting ShuffleMapStage 1 (MapPartitionsRDD[13] at toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22), which has no missing parents
+25/11/03 10:02:43 INFO MemoryStore: Block broadcast_4 stored as values in memory (estimated size 47.4 KiB, free 433.7 MiB)
+25/11/03 10:02:43 INFO MemoryStore: Block broadcast_4_piece0 stored as bytes in memory (estimated size 21.3 KiB, free 433.6 MiB)
+25/11/03 10:02:43 INFO BlockManagerInfo: Added broadcast_4_piece0 in memory on 53781419c11f:44265 (size: 21.3 KiB, free: 434.3 MiB)
+25/11/03 10:02:43 INFO SparkContext: Created broadcast 4 from broadcast at DAGScheduler.scala:1580
+25/11/03 10:02:43 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 1 (MapPartitionsRDD[13] at toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22) (first 15 tasks are for partitions Vector(0))
+25/11/03 10:02:43 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks resource profile 0
+25/11/03 10:02:43 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1) (53781419c11f, executor driver, partition 0, PROCESS_LOCAL, 8200 bytes) 
+25/11/03 10:02:43 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+25/11/03 10:02:43 INFO CodeGenerator: Code generated in 36.131895 ms
+25/11/03 10:02:43 INFO CodeGenerator: Code generated in 7.98676 ms
+25/11/03 10:02:43 INFO CodeGenerator: Code generated in 5.388582 ms
+25/11/03 10:02:43 INFO CodeGenerator: Code generated in 4.492502 ms
+25/11/03 10:02:43 INFO FileScanRDD: Reading File path: file:///home/jovyan/data/data.csv, range: 0-430717, partition values: [empty row]
+25/11/03 10:02:43 INFO CodeGenerator: Code generated in 5.194522 ms
+25/11/03 10:02:43 INFO BlockManagerInfo: Removed broadcast_0_piece0 on 53781419c11f:44265 in memory (size: 34.3 KiB, free: 434.3 MiB)
+25/11/03 10:02:43 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 2808 bytes result sent to driver
+25/11/03 10:02:43 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 312 ms on 53781419c11f (executor driver) (1/1)
+25/11/03 10:02:43 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool 
+25/11/03 10:02:43 INFO DAGScheduler: ShuffleMapStage 1 (toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22) finished in 0.328 s
+25/11/03 10:02:43 INFO DAGScheduler: looking for newly runnable stages
+25/11/03 10:02:43 INFO DAGScheduler: running: Set()
+25/11/03 10:02:43 INFO DAGScheduler: waiting: Set()
+25/11/03 10:02:43 INFO DAGScheduler: failed: Set()
+25/11/03 10:02:44 INFO ShufflePartitionsUtil: For shuffle(0), advisory target size: 67108864, actual target size 1048576, minimum partition size: 1048576
+25/11/03 10:02:44 INFO CodeGenerator: Code generated in 8.179572 ms
+25/11/03 10:02:44 INFO HashAggregateExec: spark.sql.codegen.aggregate.map.twolevel.enabled is set to true, but current version of codegened fast hashmap does not support this aggregate.
+25/11/03 10:02:44 INFO CodeGenerator: Code generated in 16.773316 ms
+25/11/03 10:02:44 INFO SparkContext: Starting job: toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22
+25/11/03 10:02:44 INFO DAGScheduler: Got job 2 (toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22) with 1 output partitions
+25/11/03 10:02:44 INFO DAGScheduler: Final stage: ResultStage 3 (toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22)
+25/11/03 10:02:44 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 2)
+25/11/03 10:02:44 INFO DAGScheduler: Missing parents: List()
+25/11/03 10:02:44 INFO DAGScheduler: Submitting ResultStage 3 (MapPartitionsRDD[17] at toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22), which has no missing parents
+25/11/03 10:02:44 INFO MemoryStore: Block broadcast_5 stored as values in memory (estimated size 50.6 KiB, free 433.8 MiB)
+25/11/03 10:02:44 INFO MemoryStore: Block broadcast_5_piece0 stored as bytes in memory (estimated size 22.7 KiB, free 433.8 MiB)
+25/11/03 10:02:44 INFO BlockManagerInfo: Removed broadcast_4_piece0 on 53781419c11f:44265 in memory (size: 21.3 KiB, free: 434.3 MiB)
+25/11/03 10:02:44 INFO BlockManagerInfo: Added broadcast_5_piece0 in memory on 53781419c11f:44265 (size: 22.7 KiB, free: 434.3 MiB)
+25/11/03 10:02:44 INFO SparkContext: Created broadcast 5 from broadcast at DAGScheduler.scala:1580
+25/11/03 10:02:44 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 3 (MapPartitionsRDD[17] at toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22) (first 15 tasks are for partitions Vector(0))
+25/11/03 10:02:44 INFO TaskSchedulerImpl: Adding task set 3.0 with 1 tasks resource profile 0
+25/11/03 10:02:44 INFO TaskSetManager: Starting task 0.0 in stage 3.0 (TID 2) (53781419c11f, executor driver, partition 0, NODE_LOCAL, 7615 bytes) 
+25/11/03 10:02:44 INFO Executor: Running task 0.0 in stage 3.0 (TID 2)
+25/11/03 10:02:44 INFO BlockManagerInfo: Removed broadcast_2_piece0 on 53781419c11f:44265 in memory (size: 34.3 KiB, free: 434.3 MiB)
+25/11/03 10:02:44 INFO CodeGenerator: Code generated in 6.006529 ms
+25/11/03 10:02:44 INFO ShuffleBlockFetcherIterator: Getting 1 (13.3 KiB) non-empty blocks including 1 (13.3 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) push-merged-local and 0 (0.0 B) remote blocks
+25/11/03 10:02:44 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 9 ms
+25/11/03 10:02:44 INFO CodeGenerator: Code generated in 17.64174 ms
+25/11/03 10:02:44 INFO Executor: Finished task 0.0 in stage 3.0 (TID 2). 6044 bytes result sent to driver
+25/11/03 10:02:44 INFO TaskSetManager: Finished task 0.0 in stage 3.0 (TID 2) in 126 ms on 53781419c11f (executor driver) (1/1)
+25/11/03 10:02:44 INFO TaskSchedulerImpl: Removed TaskSet 3.0, whose tasks have all completed, from pool 
+25/11/03 10:02:44 INFO DAGScheduler: ResultStage 3 (toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22) finished in 0.146 s
+25/11/03 10:02:44 INFO DAGScheduler: Job 2 is finished. Cancelling potential speculative or zombie tasks for this job
+25/11/03 10:02:44 INFO TaskSchedulerImpl: Killing all running tasks in stage 3: Stage finished
+25/11/03 10:02:44 INFO DAGScheduler: Job 2 finished: toPandas at /tmp/experiment/scripts/spark_top_countries_noplot.py:22, took 0.171085 s
+Wrote top countries data to results/top_countries_cases.csv
+25/11/03 10:02:44 INFO SparkContext: SparkContext is stopping with exitCode 0.
+25/11/03 10:02:44 INFO SparkUI: Stopped Spark web UI at http://53781419c11f:4040
+25/11/03 10:02:44 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+25/11/03 10:02:44 INFO MemoryStore: MemoryStore cleared
+25/11/03 10:02:44 INFO BlockManager: BlockManager stopped
+25/11/03 10:02:44 INFO BlockManagerMaster: BlockManagerMaster stopped
+25/11/03 10:02:44 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+25/11/03 10:02:44 INFO SparkContext: Successfully stopped SparkContext
+25/11/03 10:02:44 INFO ShutdownHookManager: Shutdown hook called
+25/11/03 10:02:44 INFO ShutdownHookManager: Deleting directory /tmp/spark-387817d2-2745-4f9d-99d6-496e2c140ab0
+25/11/03 10:02:44 INFO ShutdownHookManager: Deleting directory /tmp/spark-387817d2-2745-4f9d-99d6-496e2c140ab0/pyspark-c6f9c95d-251e-47bc-a482-ea2d9f95626f
+25/11/03 10:02:44 INFO ShutdownHookManager: Deleting directory /tmp/spark-052c6cea-e7f7-4617-be5e-12d9cc58871b
